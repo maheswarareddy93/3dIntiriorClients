@@ -1,0 +1,210 @@
+﻿
+@model ThreeDSpecUpdate;
+@{
+    int count = 0;
+    int productCount = 0;
+}
+@section styles{ }
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <form method="post" asp-action="ThreeDSpecUpdate" asp-controller="Admin" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="upload-form-sec">
+                                        <div class="main-heading">
+                                            <h1>3d Walkthrough</h1>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-12">
+                                                <label asp-for="ThreeDLink">3D View Link<span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="ThreeDLink" class="form-control" placeholder="Enter a 3d view   link..">
+                                            </div>
+                                        </div>
+                                        <div class="main-heading">
+                                            <h1>Specification</h1>
+                                        </div>
+                                        <div class="form-row dynamic-records">
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Specification[0].ElementName">Element <span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="Specification[0].ElementName" class="form-control" placeholder="Enter a Element..">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Specification[0].Brand">Brand <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" asp-for="Specification[0].Brand" placeholder="Enter a Brand..">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Specification[0].ProductLink">Product link <span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="Specification[0].ProductLink" class="form-control" placeholder="Enter a Product link..">
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label>Product Image <span class="text-danger">*</span></label>
+                                                <div class="custom-file-up">
+                                                    <input type="file" asp-for="Specification[0].Files" class="custom-file-input" id="Specfile_@count" name="Specification[0].Files" onchange="ShowImagePreview(this)" multiple>
+                                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="button" class="btn btn-primary add_more_button add-room-btn" onclick="AddNewDiv()">Add New</button>
+                                        </div>
+                                        <div class="dynamic-field-generate"></div>
+                                        <div class="main-heading">
+                                            <h1>3d Image with Dimensions</h1>
+                                        </div>
+                                        <div class="form-row dynamic-records-two">
+                                            <div class="form-group col-md-12">
+                                                <label asp-for="Dimensitions[0].files">Silder Image <span class="text-danger">*</span></label>
+                                                <div class="custom-file-up">
+                                                    <input type="file" asp-for="Dimensitions[0].files" class="custom-file-input" id="Productfile_@productCount" name="Dimensitions[0].files" onchange="ShowImagePreview(this)" ; multiple>
+                                                    <label class="custom-file-label" for="Dimensitions[0].files">Choose file</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <label asp-for="Dimensitions[0].RoomType">Room Name <span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="Dimensitions[0].RoomType" class="form-control">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Dimensitions[0].ItemName">Item <span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="Dimensitions[0].ItemName" class="form-control" placeholder="Enter a item..">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label asp-for="Dimensitions[0].Dimensionss">Dimension<span class="text-danger">*</span></label>
+                                                <input type="text" asp-for="Dimensitions[0].Dimensionss" class="form-control" placeholder="Enter a dimension..">
+                                            </div>
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="button" class="btn btn-primary add_more_button add-room-btn-two" onclick="AddProductDiv()">Add New</button>
+                                        </div>
+                                        <div class="dynamic-field-generate-two"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="count" value="@count" />
+                            <input type="hidden" id="productCount" value="@productCount" />
+                            <input type="hidden" asp-for="CUUID" id="pid" value="@Model.CUUID" />
+                            <div class="row justify-content-center">
+                                <div class="col-md-12 text-center">
+                                    <button class="btn btn-primary final-submit-button" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>
+@section scripts{
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/js/lightslider.js"></script>
+    <script>
+        $(document).on('click', '.remove-field', function (e) {
+            debugger
+            $(this).parent('.removeDiv-one').parent('.remove').remove();
+            e.preventDefault();
+        });
+        var max_fields_limit = 10; //set limit for maximum input fields
+        var x = 1; //initialize counter for text box
+        $('.add_more_button').click(function (e) { //click event on add more fields button having class add_more_button
+            e.preventDefault();
+            if (x < max_fields_limit) { //check conditions
+                x++; //counter increment
+                $('.input_fields_container').append('<div><input type="text" name="product_name[]"/><a href="#" class="remove_field" style="margin-left:10px;">Remove</a></div>'); //add input field
+            }
+        });
+        $('.input_fields_container').on("click", ".remove_field", function (e) { //user click on remove text links
+            e.preventDefault(); $(this).parent('div').remove(); x--;
+        })
+    </script>
+    <script>
+        $(document).ready(function () {
+            if (window.File && window.FileList && window.FileReader) {
+                $("#file1").on("change", function (e) {
+                    var files = e.target.files,
+                        filesLength = files.length;
+                    for (var i = 0; i < filesLength; i++) {
+                        var f = files[i]
+                        var fileReader = new FileReader();
+                        fileReader.onload = (function (e) {
+                            var file = e.target;
+                            $("<span class=\"pip\">" +
+                                "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                                "<br/><span class=\"remove\">Remove</span>" +
+                                "</span>").insertAfter("#file1");
+                            $(".remove").click(function () {
+                                $(this).parent(".pip").remove();
+                            });
+                        });
+                        fileReader.readAsDataURL(f);
+                    }
+                });
+            }
+        });
+    </script>
+    <script>
+        function ShowImagePreview(input) {
+            if (input.files && input.files[0]) {
+                var files = input.files,
+                    filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i];
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function (e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" +
+                            "<img class=\"imageThumb\" id='imgRemove" + i + "' src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                            "<br/><span class=\"remove\">Remove image</span>" +
+                            "</span>").insertAfter("#" + input.id);
+                        $(".remove").click(function () {
+                            debugger
+                            $(this).parent(".pip" + i).remove();
+                            var id = $(this).id;
+                            $("#" + id).attr('src', '');
+                        });
+                    });
+                    fileReader.readAsDataURL(f)
+                }
+            }
+        }
+        function AddNewDiv() {
+            var value = Number($("#count").val());
+            count = Number(value);
+            if (count >= 0) {
+                count = count + 1;
+                $("#count").val(count);
+                var newDiv = '<div class="form-row dynamic-records"><div class="form-group col-md-6"><label asp-for="Specification[' + count + '].ElementName" name="Specification[' + count + '].ElementName">Element <span class="text-danger">*</span></label> <input type="text" asp-for="Specification[' + count + '].ElementName" name="Specification[' + count + '].ElementName" class="form-control" placeholder="Enter a Element.."> </div> <div class="form-group col-md-6"> <label name="Specification[' + count + '].Brand">Brand <span class="text-danger">*</span></label> <input type="text" class="form-control" name="Specification[' + count + '].Brand" placeholder="Enter a Brand.."> </div> <div class="form-group col-md-6"> <label name="Specification[' + count + '].ProductLink">Product link <span class="text-danger">*</span></label> <input type="text" name="Specification[' + count + '].ProductLink" class="form-control" placeholder="Enter a Product link.."> </div> <div class="form-group col-md-12"><label>Product Image <span class="text-danger">*</span></label><div class="custom-file-up"><input type="file" asp-for="Specification[' + count + '].Files" class="custom-file-input" id="Specfile_' + count + '" name="Specification[' + count + '].Files" onchange="ShowImagePreview(this)"; multiple> <label class="custom-file-label" for="customFile">Choose file</label></div></div></div>';
+                $('.dynamic-field-generate').append(newDiv);
+                $('.dynamic-field-generate .dynamic-records').addClass('single');
+            }
+            $('.dynamic-field-generate .form-control').addClass('border-blue');
+            $('.dynamic-field-generate .custom-file-input').addClass('border-blue');
+            $('.dynamic-field-generate .custom-file-label').addClass('border-blue-left');
+            $('.single').append('<div class="removeDiv-one"> <button type="button" class="btn btn-primary remove-field btn-remove-customer">Remove</button></div>');
+            $('.dynamic-field-generate > .single').attr("class", "remove form-group row");
+            $('.dynamic-field-generate input').each(function () {
+            });
+        }
+        function AddProductDiv() {
+            var value = Number($("#productCount").val());
+            prodcount = Number(value);
+            if (prodcount >= 0) {
+                prodcount = prodcount + 1;
+                var newProdDiv = '<div class="form-row dynamic-records-two"> <div class="form-group col-md-12"> <label name="Dimensitions[' + prodcount + '].files">Silder Image <span class="text-danger">*</span></label> <div class="custom-file-up"> <input type="file" asp-for="Dimensitions[' + prodcount + '].files" class="custom-file-input" id="Productfile_' + prodcount + '" name="Dimensitions[' + prodcount + '].files" onchange="ShowImagePreview(this)"; multiple> <label class="custom-file-label" for="Dimensitions[' + prodcount + '].files">Choose file</label> </div> </div> <div class="form-group col-md-12"> <label for="Dimensitions[' + prodcount + '].RoomType">Room Name <span class="text-danger">*</span></label> <input type="text" name="Dimensitions[1].RoomType" class="form-control"> </div> <div class="form-group col-md-6"> <label for="Dimensitions[' + prodcount + '].ItemName">Item <span class="text-danger">*</span></label> <input type="text" name="Dimensitions[' + prodcount + '].ItemName" class="form-control" placeholder="Enter a item.."> </div> <div class="form-group col-md-6"> <label for="Dimensitions[' + prodcount + '].Dimensionss">Dimension<span class="text-danger">*</span></label> <input type="text" name="Dimensitions[' + prodcount + '].Dimensionss" class="form-control" placeholder="Enter a dimension.."> </div> </div>';
+                $("#productCount").val(prodcount);
+                $('.dynamic-field-generate-two').append(newProdDiv);
+
+                $('.dynamic-field-generate-two .dynamic-records-two').addClass('single');
+            }
+            $('.dynamic-field-generate-two .form-control').addClass('border-blue');
+            $('.dynamic-field-generate-two .custom-file-input').addClass('border-blue');
+            $('.dynamic-field-generate-two .custom-file-label').addClass('border-blue-left');
+            $('.single').append('<div class="removeDiv-one"> <button type="button" class="btn btn-primary remove-field btn-remove-customer">Remove</button></div>');
+            $('.dynamic-field-generate-two > .single').attr("class", "remove form-group row");
+        }
+    </script>
+}

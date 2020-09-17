@@ -1,0 +1,19 @@
+[
+  {
+    "outputFileName": "wwwroot/css/bundle.css",
+    "inputFiles": [
+      "wwwroot/css/style.css",
+      "wwwroot/css/custom.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/bundle.js",
+    "inputFiles": [
+      "wwwroot/js/plugins/common/common.min.js",
+      "wwwroot/js/custom.min.js",
+      "wwwroot/js/settings.js",
+      "wwwroot/js/gleek.js",
+      "wwwroot/js/styleSwitcher.js"
+    ]
+  }
+]

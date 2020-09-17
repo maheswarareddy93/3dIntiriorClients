@@ -1,0 +1,71 @@
+﻿@model List<CustomerViewModel>;
+@{
+    List<CustomerViewModel> lst = Model;
+}
+@section styles{
+    <link href="/plugins/tables/css/datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title flt_left">New Customers</h4>
+                        <div class="general-button flt_right">
+                            <button type="button" class="btn mb-1 btn-flat btn-primary">Add</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered zero-configuration">
+                                <thead>
+                                    <tr>
+                                        <th>CustomerName</th>
+                                        <th>ProjectName</th>
+                                        <th>UnitType</th>
+                                        <th>UnitSize</th>
+                                        <th>CreatedDate</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (lst != null && lst.Count > 0)
+                                    {
+                                        foreach (var customer in lst)
+                                        {
+                                            <tr>
+                                                <td>@customer.CustomerName</td>
+                                                <td>@customer.Projectname</td>
+                                                <td>@customer.UnitType </td>
+                                                <td>@customer.UnitSize</td>
+                                                <td>@customer.CreatedDate</td>
+                                                <td><a asp-action="ReferenceImgView" asp-controller="Admin" asp-route-pid="@customer.cuuid"><button class="btn btn-dark">ReferenceImages</button></a></td>
+                                                @if (customer.FinalViewImages!=null) {
+                                                <td><a asp-action="ThreeDSpecUpdate" asp-controller="Admin" asp-route-id="@customer.cuuid"><button class="btn btn-dark">3DSpecUpdate</button></a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>No Data Found</tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="/plugins/tables/js/jquery.dataTables.min.js"></script>
+    <script src="/plugins/tables/js/datatable/dataTables.bootstrap4.min.js"></script>
+    <script src="/plugins/tables/js/datatable-init/datatable-basic.min.js"></script>
+}

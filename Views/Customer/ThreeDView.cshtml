@@ -1,0 +1,168 @@
+﻿@model ThreeDInfoViewModel;
+@{
+    int i = 1;
+}
+@section styles{
+    <link rel="stylesheet" href="/css/lightslider.css" />
+}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        @if (Model != null)
+                        {
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <iframe src="@Model.Link" width="100%"
+                                            height="600"></iframe>
+                                </div>
+                                <div class="col-lg-12 col-md-1 col-sm-12 col-12">
+                                    <div class="view-full-block">
+                                        <a href="@Model.Link" target="blank"
+                                           class="btn btn-primary">View full screen</a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-8 mx-auto">
+                                    <div class="table-box">
+                                        <div class="main-heading">
+                                            <h1>Interior Specification</h1>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Element</th>
+                                                        <th scope="col">Brand</th>
+                                                        <th scope="col">Product link</th>
+                                                        <th><i class="fa fa-download" aria-hidden="true"></i></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.Specs != null && Model.Specs.Count > 0)
+                                                    {
+                                                        foreach (var spec in Model.Specs)
+                                                        {
+                                                            @foreach (var img in spec.images)
+                                                            {
+                                                                <tr>
+                                                                    <td>@spec.ElementName</td>
+                                                                    <td><a href="@spec.ProductLink">@spec.Brand</a></td>
+                                                                    <td class="link-column">
+                                                                        <a href="@spec.ProductLink" class="main-link">@spec.ProductLink</a>
+                                                                        <div class="product-info-box">
+                                                                            <div class="img-box">
+                                                                                <a href="#">
+                                                                                    <img src="/ApplicationDocuments/@Model.Cid/@img.Name"
+                                                                                         alt="">
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="pro-text">
+                                                                                <a href="#">
+                                                                                    <h4>Spun Light T</h4>
+                                                                                    <h6>By Flos</h6>
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="rotate-square"></div>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="view-more-block">
+                                        <button type="button" class="btn btn-primary moreless-button">View more</button>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.Dimensions.Count > 0)
+                            {
+                                foreach (var dimen in Model.Dimensions)
+                                {
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            <div class="slider-part">
+                                                <div class="item">
+                                                    <ul id="content-slider_@i" class="content-slider">
+                                                        @foreach (var img in dimen.images)
+                                                        {
+                                                            <li>
+                                                                <a href="/ApplicationDocuments/@Model.Cid/@img.Name" class="img-fluid" data-lightbox="roadtrip">
+                                                                    <img src="/ApplicationDocuments/@Model.Cid/@img.Name" alt="" class="img-fluid">
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="slider-heading">
+                                                <h1>@dimen.RoomType</h1>
+                                            </div>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Item</th>
+                                                        <th scope="col">Dimension</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>@dimen.ItemName</td>
+                                                        <td>@dimen.Demensions</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    i = i + 1;
+                                }
+                                <input type="hidden" id="dimensioncount" value="@Model.Dimensions.Count" />
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="/js/lightbox-plus-jquery.js"></script>
+    <script src="/js/lightslider.js"></script>
+    <script>
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'fitImagesInViewport': true,
+            'showImageNumberLabel': false,
+            'maxWidth': 900
+        });
+        $(document).ready(function () {
+            var count = (Number)($("#dimensioncount").val());
+            for (let i = 1; i <= count; i++) {
+                $("#content-slider_"+i).lightSlider({
+                    item: 1,
+                    loop: true,
+                    keyPress: true
+                });
+            }           
+            $('.moreless-button').click(function () {
+                $('.moretext').slideToggle();
+                if ($('.moreless-button').text() == "View more") {
+                    $(this).text("View less")
+                } else {
+                    $(this).text("View more")
+                }
+            });
+        });
+    </script>
+}

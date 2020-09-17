@@ -1,0 +1,112 @@
+﻿@model ProjectDataInfo;
+@using _3dIntiriorClients.Models;
+@using System.Text.Json;
+@{
+    RootImg imgobj = new RootImg();
+    int i = 1;
+}
+@section styles{
+    <link rel="stylesheet" href="/css/lightslider.css" />
+}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            @if (Model!=null ) {
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="view-more-ul">
+                                    <ul class="display-data-ul">
+                                        <li>
+                                            <label class="project-q">Project name :</label>
+                                            <label class="project-ans">@Model.Projectname</label>
+                                        </li>
+                                        <li>
+                                            <label class="project-q">Unit size :</label>
+                                            <label class="project-ans">@Model.UnitSize</label>
+                                        </li>
+                                        <li>
+                                            <label class="project-q">Type :</label>
+                                            <label class="project-ans">@Model.UnitType</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.Referenceimages!=null) {
+                    imgobj.list = JsonSerializer.Deserialize<List<ReferenceImages>>(Model.Referenceimages);
+                <div class="card">
+                    <div class="card-body">
+                        @if (imgobj.list != null && imgobj.list.Count > 0)
+                        {
+                            @foreach (var data in imgobj.list)
+                            {
+                                <div class="row img-view-row">
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="img-view">
+                                            <ul id="image-gallery_@i" class="gallery list-unstyled cS-hidden">
+                                                @foreach (var imgPath in data.ReferenceImg)
+                                                {
+                                                    <li data-thumb="/ApplicationDocuments/@Model.cuuid/@imgPath.Name">
+                                                        <img src="/ApplicationDocuments/@Model.cuuid/@imgPath.Name" />
+                                                    </li>
+                                                }
+                                                </ul>
+                                            </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="img-desc">
+                                            <div class="single-img-display">
+                                                <ul>
+                                                    <li>
+                                                        <img src="/icons/Foyer.png" alt="">
+                                                        <h6>Foyer </h6>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <b>@data.RoomType</b>
+                                            <p>@data.Comments.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                i = i + 1;
+                            }
+                           
+                        }
+                        </div>
+                    <input type="hidden" id="imglistcount" value="@imgobj.list.Count" />
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+    <!-- #/ container -->
+</div>
+@section scripts{
+    <script src="/js/lightslider.js"></script>
+    <script>
+        $(document).ready(function () {            
+            var count = (Number)($("#imglistcount").val());
+            for (let i = 1; i <= count;i++) {
+                $('#image-gallery_'+i).lightSlider({
+                    gallery: true,
+                    item: 1,
+                    thumbItem: 9,
+                    slideMargin: 0,
+                    speed: 500,
+                    auto: true,
+                    loop: true,
+                    onSliderLoad: function () {
+                        $('#image-gallery_'+i).removeClass('cS-hidden');
+                    }
+                });              
+            }
+            });
+    </script>
+}

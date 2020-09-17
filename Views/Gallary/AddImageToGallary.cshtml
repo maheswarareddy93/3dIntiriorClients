@@ -1,0 +1,105 @@
+﻿@model GallaryViewModel;
+@section styles{ }
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="add-gallery-block">
+                            <div class="gallery-form">
+                                <form method="post" asp-action="AddImageToGallary" asp-controller="Gallary" enctype="multipart/form-data">
+                                    <div class="form-group row">
+                                        <label class="col-lg-4 col-form-label" for="project-name">
+                                            Select Category<span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-lg-8">
+                                            <select asp-for="RoomTypeID" asp-items="@(new SelectList(Model.SelectRoomType,"RoomId","RoomType"))" class="form-control" tabindex="7">
+                                                <option value="">-- Select RoomType --</option>
+                                            </select>
+                                            <span asp-validation-for="RoomTypeID" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-4 col-form-label mt-3" for="room-name">
+                                            Add Images <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-lg-8 mt-3">
+                                            <div class="input-group">
+                                                <input type="file" asp-for="lstImages" class="form-control" id="files" multiple placeholder="Choose File" />
+                                                <div class="input-group-append gallery-group-append">
+                                                    <button class="btn gallery-append-button btn-primary image-button-right-border" type="submit">Browse</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row form-group">
+                                        <label class="col-lg-4 col-form-label mt-3" for="room-name">
+                                            Select Images<span class="text-danger">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            <div class="row" id="dvfiles">
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <button class="btn btn-primary final-submit-button" type="submit" data-toggle="modal" data-target="#exampleModal">Submit</button>
+                                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header image-success-header">
+                                                            <h5 class="modal-title image-success-title" id="exampleModalLabel">Image Successfully Added</h5>
+                                                            <button type="button" class="close image-success-close" data-dismiss="modal" aria-label="Close">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="#7571f9" height="20px" viewBox="0 -46 417.81333 417" width="20px">
+                                                                    <path d="m159.988281 318.582031c-3.988281 4.011719-9.429687 6.25-15.082031 6.25s-11.09375-2.238281-15.082031-6.25l-120.449219-120.46875c-12.5-12.5-12.5-32.769531 0-45.246093l15.082031-15.085938c12.503907-12.5 32.75-12.5 45.25 0l75.199219 75.203125 203.199219-203.203125c12.503906-12.5 32.769531-12.5 45.25 0l15.082031 15.085938c12.5 12.5 12.5 32.765624 0 45.246093zm0 0" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            if (window.File && window.FileList && window.FileReader) {
+                $("#files").on("change", function(e) {
+                var files = e.target.files,
+                    filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i]
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function(e) {
+                    var file = e.target;
+                    $("<div class=\"col-md-4 mb-4 pip\">" +
+                        "<div class=\"add-gallery-images\">"+
+                        "<img class=\"img-fluid\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                        "<button type=\"button\" class=\"remove btn btn-primary mt-3\">Remove</button>" +
+                        "</div></div>").appendTo("#dvfiles");
+
+                    $(".remove").click(function(){
+                        $(this).parent().parent(".pip").remove();
+                    });
+                    });
+                    fileReader.readAsDataURL(f);
+                }
+                });
+            } else {
+                alert("Your browser doesn't support to File API")
+            }
+        });
+    </script>
+}

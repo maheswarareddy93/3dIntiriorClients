@@ -1,0 +1,168 @@
+﻿@model GallaryViewModel;
+@using System.Text.Json;
+@{
+    GallaryImagesToDB imageDb = new GallaryImagesToDB();
+    
+}
+<br /> @if (Model != null)
+{
+    var type = Model.RoomTypeID;
+    <input type="hidden" value="@type" id="type"/>
+    <div class="row list-wrapper-@type">
+        @if (Model.Gimages != null)
+        {
+            imageDb = JsonSerializer.Deserialize<GallaryImagesToDB>(Model.Gimages);
+            int i = 1;
+            int count = imageDb.lstImages.Count;
+            <br>
+            @foreach (var image in imageDb.lstImages)
+            {               
+    <div class="col-lg-3 col-sm-4 list-item-page-@type">
+        <a href="" class="p-0 hall-image" data-toggle="modal" data-target="#@Model.RoomType.Replace(" ","")-@i">
+            <img src="~/ApplicationDocuments/GallaryImages/@Model.RoomType/@image.FileName" id="@image.Id" class="gallery-img-width">
+        </a>
+        <div class="image-select">
+            <input type="checkbox" id="@image.Id">
+            <p>Select Image</p>
+        </div>
+        <div class="modal fade" id="@Model.RoomType.Replace(" ","")-@i" tabindex="-1" aria-labelledby="@Model.RoomType.Replace(" ","")-@i-Label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered custom-modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="@Model.RoomType.Replace(" ","")-@i-Label">@Model.RoomType</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="custom-modal-flex">
+                        <div class="modal-body text-center">
+                            <div class="owl-carousel owl-theme modal-slider-hall">
+                                <div class="item">
+                                    <img src="~/ApplicationDocuments/GallaryImages/@Model.RoomType/@image.FileName" id="@image.Id" class="popup-img-width">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer custom-modal-footer">
+                            <div class="icon-1">
+                                <button class="follow btn" type="button">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                                <h6 class="title-icon">Follow</h6>
+                            </div>
+                            <div class="icon-2">
+                                <button class="save btn" type="button">
+                                    <i class="modal-footer-icon far fa-folder-open"></i>
+                                </button>
+                                <h6 class="title-icon">Save</h6>
+                            </div>
+                            <div class="form-group project-dropdown">
+                                <label class="text-white">Select Project</label>
+                                <select class="form-control giftshop-control">
+                                    <option class="giftshop-option">1</option>
+                                    <option class="giftshop-option">2</option>
+                                    <option class="giftshop-option">3</option>
+                                    <option class="giftshop-option">4</option>
+                                    <option class="giftshop-option">5</option>
+                                </select>
+                            </div>
+                            <div class="icon-2 delete-btn-2">
+                                <button class="save btn" type="button">
+                                    <i class="modal-footer-icon far fa-trash-alt"></i>
+                                </button>
+                                <h6 class="title-icon" id="@image.Id">Delete</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                i = i + 1;
+            }
+        }
+    </div>
+    <div id="pagination-container_@Model.RoomTypeID" class="light-theme simple-pagination"></div>
+    
+}
+
+<script>
+    $('select').niceSelect();
+    $(document).ready(function () {
+
+        if (window.File && window.FileList && window.FileReader) {
+            $("#files").on("change", function (e) {
+                var files = e.target.files,
+                    filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i]
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function (e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" + " < img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\" />" + "<br /><span class=\"remove\">Remove</span>" +
+                            "</span > ").insertAfter("#files");
+                        $(".remove").click(function () {
+                            $(this).parent(".pip").remove();
+                        });
+                    });
+                    fileReader.readAsDataURL(f);
+                }
+            });
+        }
+        if (window.File && window.FileList && window.FileReader) {
+            $("#file2").on("change", function (e) {
+                var files = e.target.files,
+                    filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i]
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function (e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" + " < img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\" />" + "<br /><span class=\"remove\">Remove image</span>" +
+                            "</span > ").insertAfter("#file2");
+                        $(".remove").click(function () {
+                            $(this).parent(".pip").remove();
+                        });
+                    });
+                    fileReader.readAsDataURL(f);
+                }
+            });
+        } else {
+            alert("Your browser doesn't support to File API")
+        }
+
+        $(".save").click(function () {
+            $(".project-dropdown").addClass('project-dropdown-show');
+        });
+
+        $('.nice-select .list li').click(function () {
+            $('.project-button').addClass('project-dropdown-show');
+        });
+    });
+    $('.modal-slider-hall').owlCarousel({
+        loop: true,
+        margin: 20,
+        nav: true,
+        navText: ['<i class="fas black-color fa-arrow-left"></i>', '<i class="fas black-color fa-arrow-right"></i>'],
+        dots: false,
+        autoplay: false,
+        items: 1
+    });
+    //Pagination Script starts here    
+    var type =(Number) ($("#type").val());
+    var pageId = (Number)($("#pagination").val());
+    var items = $(".list-wrapper-" + pageId + " .list-item-page-" + pageId + "");
+    var numItems = items.length;
+    var perPage = 8;
+    items.slice(perPage).hide();
+    $('#pagination-container_'+pageId).pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "&laquo;",
+        nextText: "&raquo;",
+        onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+        }
+    });
+</script>

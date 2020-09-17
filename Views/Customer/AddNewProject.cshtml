@@ -1,0 +1,185 @@
+﻿
+@model Projectdatamodel;
+@{
+    int i = 1;
+}
+@section styles{ }
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-validation">
+                            <form class="form-valide" enctype="multipart/form-data" method="post" asp-action="MyProjects" asp-controller="Customer">
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" for="project-name">
+                                        Project name <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" asp-for="ProjectName" class="form-control" id="project-name"
+                                               placeholder="Enter a Project name..">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" for="unit-size">
+                                        Enter Unit size <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" asp-for="Unitsize" class="form-control" id="unit-size"
+                                               placeholder="Enter a Unit size..">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-lg-4 col-form-label" for="val-skill">
+                                        Type <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <select asp-for="Id" asp-items="@(new SelectList(Model.SelectUnitType,"Id","Type"))" class="form-control" tabindex="7">
+                                            <option value="">-- Select UnitType --</option>
+                                        </select>
+                                        <span asp-validation-for="Id" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="form-group row dynamic-records">
+                                    <label class="col-lg-4 col-form-label" for="room-name">
+                                        Enter Room Name <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6">
+                                        <input type="text" class="form-control" id="room-name_@i" asp-for="Room1" placeholder="Enter a room name..">
+                                    </div>
+
+                                    <label class="col-lg-4 col-form-label mt-3" for="room-name">
+                                        Select Reference images <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6 mt-3 remove-field-flex">
+                                        <div class="custom-file-up">
+                                            <input asp-for="Attachments1" class="custom-file-input" id="file1" name="Attachments1" onchange="ShowImagePreview(this)" multiple>
+                                            <label class="custom-file-label" for="customFile">Choose file</label>
+                                        </div>
+                                    </div>
+
+                                    <label class="col-lg-4 mt-4 col-form-label" for="room-name">
+                                        Comments<span class="text-danger">*</span>
+                                    </label>
+                                    <div class="col-lg-6 mt-4">
+                                        <text-area class="form-control" asp-for="comments1" row="3" id="comments1">
+                                    </div>
+                                </div>
+                                <!-- <div class="form-group row justify-content-between">
+                                    <div class="col-md-6 offset-md-4 d-flex justify-content-end">
+
+                                    </div>
+                                </div> -->
+
+                                <div class="dynamic-field-generate">
+
+                                </div>
+
+
+                                <div class="form-group row justify-content-between">
+                                    <div class="col-md-6 offset-md-4 d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="button" class="btn btn-primary add-room-btn" onclick="AddNewDiv()">Add Room Button</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" asp-for="CustomerId" value="@Model.CustomerId" id="customerId" />
+                                <input type="hidden" value="@i" asp-for="count" id="count" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>*@
+    <script src="/plugins/tables/js/jquery.dataTables.min.js"></script>
+    <script src="/plugins/tables/js/datatable/dataTables.bootstrap4.min.js"></script>
+    <script src="/plugins/tables/js/datatable-init/datatable-basic.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            if (window.File && window.FileList && window.FileReader) {
+                $("#files").on("change", function (e) {
+                    var files = e.target.files,
+                        filesLength = files.length;
+                    for (var i = 0; i < filesLength; i++) {
+                        var f = files[i]
+                        var fileReader = new FileReader();
+                        fileReader.onload = (function (e) {
+                            var file = e.target;
+                            $("<span class=\"pip\">" +
+                                "<img class=\"imageThumb\" src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                                "<br/><span class=\"remove\">Remove</span>" +
+                                "</span>").insertAfter("#files");
+                            $(".remove").click(function () {                               
+                                $(this).parent(".pip").remove();
+                            });
+                        });
+                        fileReader.readAsDataURL(f);
+                    }
+                });
+            }
+            $(document).on('click', '.remove-field', function (e) {
+                $(this).parent('.removeDiv').parent('.remove').remove();
+                e.preventDefault();
+            });
+        });
+        function ShowImagePreview(input) {
+            if (input.files && input.files[0]) {
+                var files = input.files,
+
+                    filesLength = files.length;
+                for (var i = 0; i < filesLength; i++) {
+                    var f = files[i];
+                    var fileReader = new FileReader();
+                    fileReader.onload = (function (e) {
+                        var file = e.target;
+                        $("<span class=\"pip\">" +
+                            "<img class=\"imageThumb\" id='imgRemove" + i + "' src=\"" + e.target.result + "\" title=\"" + file.name + "\"/>" +
+                            "<br/><span class=\"remove\">Remove image</span>" +
+                            "</span>").insertAfter("#" + input.id);
+                        $(".remove").click(function () {
+                            debugger
+                            $(this).parent(".pip").remove();
+                            var id = $(this).id;
+                            $("#" + id).attr('src', '');
+                        });
+
+                        // Old code here
+                        /*$("<img></img>", {
+                          class: "imageThumb",
+                          src: e.target.result,
+                          title: file.name + " | Click to remove"
+                        }).insertAfter("#files").click(function(){$(this).remove();});*/
+
+                    });
+                    fileReader.readAsDataURL(f)
+                }
+            }
+        }
+        function AddNewDiv() {
+            var value = Number($("#count").val());
+            count = Number(value);
+            if (count > 0) {
+                count = count + 1;
+                alert(count);
+                var newdiv = '<div class="form-group row dynamic-records"> <label class="col-lg-4 col-form-label" for="room-name"> Enter Room Name <span class="text-danger">*</span> </label> <div class="col-lg-6"> <input type="text" asp-for="Room' + count + '" name="Room' + count + '" class="form-control" id="room-name_' + count + '" placeholder="Enter a room name.."> </div> <label class="col-lg-4 col-form-label mt-3" for="room-name_' + count + '"> Select Reference images <span class="text-danger">*</span> </label> <div class="col-lg-6 mt-3 remove-field-flex"> <div class="custom-file-up"> <input type="file" asp-for="Attachments' + count + '" name="Attachments' + count + '" class="custom-file-input" id="file' + count + '"    onchange="ShowImagePreview(this)" multiple> <label class="custom-file-label" for="customFile">Choose file</label> </div> </div> <label class="col-lg-4 mt-4 col-form-label" for="room-name_' + count + '"> Comments<span class="text-danger">*</span> </label> <div class="col-lg-6 mt-4"> <text-area class="form-control" asp-for="comments' + count + '" name="comments' + count + '" row="3" id="comments' + count + '"> </div> </div>';
+                $("#count").val(count);
+                $('.dynamic-field-generate').append(newdiv);
+                $('.dynamic-field-generate .dynamic-records').addClass('single');
+                // $('.single .add-room-btn').remove();
+            }
+            // $('.single .add-room-btn').remove();
+            $('.single').append('<div class="removeDiv"> <button type="button" class="btn btn-primary remove-field btn-remove-customer">Remove</button></div>');
+            $('.dynamic-field-generate > .single').attr("class", "remove form-group row");
+            $('.dynamic-field-generate input').each(function () {
+                //var count = 0;
+                //var fieldname = $(this).attr("name");
+                //$(this).attr('name', fieldname + count);
+                //count++;
+            });
+        }
+    </script>
+}

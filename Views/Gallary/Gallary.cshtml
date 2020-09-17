@@ -1,0 +1,107 @@
+﻿@model GallaryViewModel;
+@{
+    int count = 1;
+}
+@section styles{
+    <link rel="stylesheet" href="/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="/css/lightslider.css">
+    <link rel="stylesheet" href="/css/nice-select.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+}
+<div class="content-body">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                @if (Model.SelectRoomType != null)
+                                {
+                                    <ul class="nav nav-pills gallery-pills" role="tablist" id="ultag">
+                                        @foreach (var type in Model.SelectRoomType)
+                                        {
+                                            if (count == 1)
+                                            {
+                                                <li class="nav-item gallery-nav-item">
+                                                    <a class="nav-link active" data-toggle="tab" id="li_@count" href="#@type.RoomId" onclick="LoadImages(@type.RoomId);">@type.RoomType</a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li class="nav-item gallery-nav-item">
+                                                    <a class="nav-link" data-toggle="tab" id="li_@count" href="#@type.RoomId" onclick="LoadImages(@type.RoomId);">@type.RoomType</a>
+                                                </li>
+                                            }
+                                            count = count + 1;
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-content" id="tabContent">
+                                    @if (Model.SelectRoomType != null)
+                                    {
+                                        int j = 1;
+                                        @foreach (var type in Model.SelectRoomType)
+                                        {
+                                            @if (j == 1)
+                                            {
+                                                <div id="@type.RoomId" class="tab-pane  active">
+                                                    <br>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div id="@type.RoomId" class="tab-pane">
+                                                    <br>
+                                                </div>
+                                            }
+                                            j = j + 1;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="previousId" type="hidden" />
+    <input id="pagination" type="hidden" />
+</div>
+@section scripts{
+    <script src="/js/jquery.simplePagination.js"></script>
+    <script src="/js/jquery.nice-select.js"></script>
+    <script src="/plugins/tables/js/jquery.dataTables.min.js"></script>
+    <script src="/plugins/tables/js/datatable/dataTables.bootstrap4.min.js"></script>
+    <script src="/plugins/tables/js/datatable-init/datatable-basic.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            LoadImages(1);
+        });
+        function LoadImages(type) {        
+            var active = $(".tab-pane.active").attr("id");
+            $("#" + active).removeClass('active');           
+            $("#pagination").val(type);
+              $.ajax({
+                    cache: false,
+                     type: "GET",
+                     url: "@Url.Action("GallaryPartialView")",
+                     data: { "Id":type},
+                     async: true,
+                     success: function (data) {
+                         $("#" + type).html(data);
+                         $("#" + type).addClass('active');
+                      },
+                     error: function (xhr, ajaxOptions, thrownError) {
+                     }
+               });
+        }        
+    </script>
+}
