@@ -22,9 +22,6 @@ namespace _3dIntiriorClients.Helpers
                 _HttpContextAccessor.HttpContext.Session.SetObject("CurrentAdminUser", value);
             }
         }
-
-
-
         public static int UserID
         {
             get

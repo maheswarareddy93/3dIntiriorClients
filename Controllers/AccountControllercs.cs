@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using _3dIntiriorClients.Helpers;
+﻿using _3dIntiriorClients.Helpers;
 using _3dIntiriorClients.Interface;
 using _3dIntiriorClients.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace _3dIntiriorClients.Controllers
 {
@@ -64,8 +59,8 @@ namespace _3dIntiriorClients.Controllers
         }
         public IActionResult Register()
         {
-            RegisterViewModel model = new RegisterViewModel();
-            return View(model);
+                RegisterViewModel model = new RegisterViewModel();
+                return View(model);
         }
 
         [HttpPost]

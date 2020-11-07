@@ -8,6 +8,7 @@ using System.Transactions;
 
 namespace _3dIntiriorClients.Repository
 {
+
     public class AccountRepositary : IAccountData
     {
         static ApplicationDbContext _context;
